@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Test Submitted{% endblock %}
+
+{% block content %}
+<h1>🎉 Test Submitted Successfully! 🎉</h1>
+<p>Your test has been submitted. Thank you for participating!</p>
+
+<h2>Ranked Scores</h2>
+{% if scores %}
+<table>
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for score_tuple in scores %}
+        <tr {% if loop.index == user_position %}style="background-color: #6a11cb; color: white;"{% endif %}>
+            <td>{{ loop.index + start_index }}</td>
+            <td>{{ score_tuple[0] }}</td>
+            <td>{{ score_tuple[1] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No scores available for this test.</p>
+{% endif %}
+
+<div class="pagination">
+    {% if has_previous %}
+    <a href="{{ url_for('test_scores', token=token, user_score=user_score) }}?start={{ start_index - 10 }}">← Previous</a>
+    {% endif %}
+    {% if has_next %}
+    <a href="{{ url_for('test_scores', token=token, user_score=user_score) }}?start={{ start_index + 10 }}">Next →</a>
+    {% endif %}
+</div>
+
+<div>
+    <a href="/">Take Another Test</a>
+    <a href="/create-test">Create a New Test</a>
+</div>
+
+<!-- Add the audio element for the MIDI clip -->
+<audio id="victory-audio" src="{{ url_for('static', filename='audio/champions.mp3') }}" preload="auto"></audio>
+
+<!-- Button to trigger the celebration -->
+<div id="celebration-container" style="display: none; text-align: center; margin-top: 20px;">
+    <button id="celebrate-button" style="padding: 10px 20px; font-size: 16px; background-color: #2575fc; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Celebrate Your Victory!
+    </button>
+</div>
+
+<!-- Confetti and MIDI playback script -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if the user is in position 1
+        const userPosition = {{ user_position }};
+        if (userPosition === 1) {
+            // Show the celebration button
+            const celebrationContainer = document.getElementById('celebration-container');
+            celebrationContainer.style.display = 'block';
+
+            // Add event listener to the button
+            const celebrateButton = document.getElementById('celebrate-button');
+            celebrateButton.addEventListener('click', function () {
+                // Play the MIDI clip
+                const audio = document.getElementById('victory-audio');
+                audio.play().catch(function (error) {
+                    console.error('Audio playback failed:', error);
+                    alert('Unable to play the audio. Please check your browser settings.');
+                });
+
+                // Trigger confetti animation
+                const duration = 5 * 1000; // 5 seconds
+                const end = Date.now() + duration;
+
+                (function frame() {
+                    confetti({
+                        particleCount: 5,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 }
+                    });
+                    confetti({
+                        particleCount: 5,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 }
+                    });
+
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                })();
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Puzzle Timer{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 20px;
+        }
+
+        a, button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background: #2575fc;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        a:hover, button:hover {
+            background: #6a11cb;
+        }
+
+        input[type="text"], input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        input[type="text"] {
+            width: 80%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .textbox-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 5px;
+        }
+
+        .textbox {
+            width: 1ch; /* Adjusted to fit exactly one character */
+            height: 40px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin: 0;
+        }
+
+        .textbox:focus {
+            outline: none;
+            border-color: #6a11cb;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #fff;
+        }
+
+        .correct {
+            background-color: green !important;
+            color: white !important;
+        }
+
+        .incorrect {
+            background-color: red !important;
+        }
+
+        ul {
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* Removes default padding */
+            margin: 0; /* Removes default margin */
+        }
+
+        li {
+            margin-bottom: 5px; /* Optional: Add spacing between list items */
+        }
+
+        /* Center the table on the page */
+        table {
+            margin: 20px auto; /* Center the table */
+            border-collapse: collapse;
+            width: 80%; /* Adjust width as needed */
+        }
+
+        /* Style the table headers */
+        th {
+            background-color: #2575fc;
+            color: white;
+            padding: 10px;
+            text-align: left; /* Left-align header text */
+            border: 1px solid #ddd;
+        }
+
+        /* Style the table cells */
+        td {
+            padding: 10px;
+            text-align: left; /* Left-align cell text */
+            border: 1px solid #ddd;
+            color: #333; /* Default text color for better readability */
+        }
+
+        /* Add alternating row colors */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        /* Highlight row on hover */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Highlight the user's row */
+        tr[style] {
+            background-color: #6a11cb !important;
+            color: white !important; /* Ensure text is readable on the highlighted row */
+        }
+
+        /* Pagination links */
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 5px;
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: #2575fc;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #6a11cb;
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Puzzle Timer{% endblock %}
+
+{% block content %}
+    {% if not token %}
+    <div class="container">
+        <h1>Welcome to the Puzzle Timer</h1>
+        <form action="/" method="GET" class="token-form" onsubmit="redirectToToken(event)">
+            <label for="token">Enter a Test Token:</label>
+            <input type="text" id="token" name="token" required autocomplete="off">
+            <button type="submit">Go to Test</button>
+        </form>
+        <p>or</p>
+        <a href="/create-test">Create a New Test</a>
+
+        <div class="recent-tests">
+            <h2>Recently Created Tests</h2>
+            <ul>
+                {% for test in recent_tests %}
+                    <li><a href="test/{{ test.token }}">Test Token: {{ test.token }}</a></li>
+                {% endfor %}
+            </ul>
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="/?page={{ page - 1 }}">Previous</a>
+                {% endif %}
+                {% if has_next %}
+                    <a href="/?page={{ page + 1 }}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <form action="/submit-test" method="POST" id="puzzleForm">
+        <input type="hidden" name="token" value="{{ token }}">
+        <label for="name">Enter your name:</label>
+        <input type="text" id="name" name="name" required autocomplete="off">
+
+        <div id="puzzle-container">
+            {% for word_info in puzzle %}
+                {% set word_index = loop.index0 %}
+                {% set word = word_info[0] %}
+                {% set hints = word_info[1] %}
+                <div class="word-block" id="word_{{ word_index }}" style="{% if word_index != 0 %}display:none;{% endif %}">
+                    <div class="row">
+                        {% for i in range(word|length) %}
+                            <div class="textbox-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="tb_{{ word_index }}_{{ i }}" 
+                                    class="textbox" 
+                                    data-word="{{ word_index }}"
+                                    data-idx="{{ i }}" 
+                                    maxlength="1"
+                                    autocomplete="off"
+                                    {% if i in hints %} 
+                                        value="{{ word[i] }}" 
+                                        disabled 
+                                    {% endif %}
+                                >
+                                <div id="timer_{{ word_index }}_{{ i }}" class="timer">0.0</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="final-score-container" style="display: none;">
+            <h3>Total Puzzle Score: <span id="total-score">0</span></h3>
+        </div>
+
+        <input type="hidden" id="scores" name="scores" required>
+        <button type="submit">Submit</button>
+    </form>
+    {% endif %}
+
+    <script id="puzzle-data" type="application/json">{{ puzzle|tojson or '[]' }}</script>
+    <script src="/static/js/puzzle.js"></script>
+
+{% endblock %}
+</body>
+</html>
